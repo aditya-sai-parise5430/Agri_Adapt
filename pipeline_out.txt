@@ -1,0 +1,206 @@
+STDOUT:
+
+================================================================
+  AgriAdapt+: Climate-Weather-Market Advisory System
+================================================================
+
+
+================================================================
+  TASK 1 - Price Forecasting Model
+================================================================
+
+
+============================================================
+  TRAINING: Baseline Linear Regression
+============================================================
+
+  -- Linear Regression --
+     RMSE :   346.6110
+     MAE  :   281.7954
+     MAPE :    16.9394 %
+
+============================================================
+  TRAINING: XGBoost Regressor
+============================================================
+
+  -- XGBoost Regressor --
+     RMSE :   142.4999
+     MAE  :    98.5655
+     MAPE :     5.7990 %
+
+============================================================
+  MODEL COMPARISON
+============================================================
+                        RMSE         MAE       MAPE
+model                                              
+Linear Regression  346.61096  281.795414  16.939374
+XGBoost Regressor  142.49992   98.565468   5.798971
+
+============================================================
+  FEATURE IMPORTANCE (XGBoost)
+============================================================
+          feature  importance
+         district    0.349220
+        crop_type    0.322332
+             week    0.150743
+            month    0.071867
+      day_of_year    0.052879
+price_roll_mean_7    0.008004
+      price_lag_1    0.007671
+      temperature    0.006750
+ price_roll_std_7    0.006533
+         humidity    0.006112
+     price_lag_14    0.006035
+      price_lag_7    0.005947
+         rainfall    0.005906
+          quarter    0.000000
+
+================================================================
+  TASK 2 - Climate Risk Classification Model
+================================================================
+
+
+============================================================
+  TRAINING: Random Forest Classifier
+============================================================
+
+  -- Evaluation Metrics --
+     Accuracy  : 1.0000
+     F1-Score  : 1.0000  (macro)
+     ROC-AUC   : 1.0000
+
+  Classification Report:
+
+              precision    recall  f1-score   support
+
+     No Risk       1.00      1.00      1.00      3518
+Drought Risk       1.00      1.00      1.00        21
+
+    accuracy                           1.00      3539
+   macro avg       1.00      1.00      1.00      3539
+weighted avg       1.00      1.00      1.00      3539
+
+
+============================================================
+  FEATURE IMPORTANCE (Random Forest)
+============================================================
+        feature  importance
+       dry_heat    0.276855
+    temperature    0.222550
+     heat_index    0.124061
+       rainfall    0.102502
+rain_temp_ratio    0.100983
+    day_of_year    0.057904
+           week    0.046510
+          month    0.035089
+       humidity    0.018644
+        quarter    0.014595
+      crop_type    0.000162
+       district    0.000147
+
+================================================================
+  TASK 3 - NLP Advisory Generator (Demo)
+================================================================
+
+============================================================
+  AgriAdapt+ Advisory  |  Pune  |  02 March 2026
+============================================================
+
+  Crop     : Wheat
+  Risk     : HIGH (probability: 78.0%)
+
+[HIGH RISK] Severe drought risk detected in your region. During the Rabi season, timely sowing is critical.
+
+Crop Advice:
+   Switch to drought-tolerant wheat varieties (e.g., GW-496). Adopt micro-irrigation to conserve soil moisture.
+
+Price Forecast:
+   Market price for Wheat is predicted to RISE by 8.0% (from Rs.2500 to Rs.2700/quintal) next week.
+   [+] Store produce in FCI or cooperative warehouses to capitalise on rising prices.
+
+Action Item:
+   Register on the PM Fasal Bima Yojana portal for crop insurance before the deadline.
+
+============================================================
+  AgriAdapt+ Advisory  |  Kolhapur  |  02 March 2026
+============================================================
+
+  Crop     : Rice
+  Risk     : LOW (probability: 20.0%)
+
+[LOW RISK] Favorable growing conditions are expected. During the Kharif season, timely sowing is critical.
+
+Crop Advice:
+   Ensure standing water of 5 cm during vegetative phase. Monitor for blast disease given current humidity.
+
+Price Forecast:
+   Market price for Rice is predicted to FALL by 10.3% (from Rs.1950 to Rs.1750/quintal) next week.
+   [-] Explore direct-to-consumer channels or Farmer Producer Organisations (FPOs).
+
+Action Item:
+   Check the eNAM portal for real-time mandi prices near you.
+
+============================================================
+  AgriAdapt+ Advisory  |  Nagpur  |  02 March 2026
+============================================================
+
+  Crop     : Cotton
+  Risk     : MODERATE (probability: 52.0%)
+
+[MODERATE RISK] Moderate climate stress signals observed. During the Kharif season, timely sowing is critical.
+
+Crop Advice:
+   Reduce plant population density to conserve moisture. Apply anti-transpirants (kaolin clay) during peak heat.
+
+Price Forecast:
+   Market price for Cotton is predicted to RISE by 3.3% (from Rs.3050 to Rs.3150/quintal) next week.
+   [+] Store produce in FCI or cooperative warehouses to capitalise on rising prices.
+
+Action Item:
+   Register on the PM Fasal Bima Yojana portal for crop insurance before the deadline.
+
+
+================================================================
+  Pipeline Complete [OK]
+================================================================
+
+  Models  -> C:\Users\prana\OneDrive\Desktop\SUB\SEM 6\CIR\AGRI\agriadapt\backend\models
+  Plots   -> C:\Users\prana\OneDrive\Desktop\SUB\SEM 6\CIR\AGRI\agriadapt\outputs
+
+
+STDERR:
+10:11:42  INFO      Data files found - skipping generation.
+10:11:45  INFO      Loading price data from: C:\Users\prana\OneDrive\Desktop\SUB\SEM 6\CIR\AGRI\agriadapt\data\price_data.csv
+10:11:45  INFO      Loaded 18,250 rows from 'C:\Users\prana\OneDrive\Desktop\SUB\SEM 6\CIR\AGRI\agriadapt\data\price_data.csv'
+10:11:45  INFO      Engineering features ...
+10:11:45  INFO        Imputed 'price': 557 \u2192 0 NaNs
+10:11:45  INFO        Imputed 'rainfall': 550 \u2192 0 NaNs
+10:11:45  INFO        Imputed 'temperature': 548 \u2192 0 NaNs
+10:11:45  INFO        Imputed 'humidity': 539 \u2192 0 NaNs
+10:11:45  INFO        Added lag feature: price_lag_1
+10:11:45  INFO        Added lag feature: price_lag_7
+10:11:45  INFO        Added lag feature: price_lag_14
+10:11:45  INFO        Dropped 14 rows after lag creation
+10:11:45  INFO        Added rolling features: window=7
+10:11:45  INFO        Encoded categorical: 'district' \u2192 ['Aurangabad' 'Kolhapur' 'Nagpur' 'Nashik' 'Pune']
+10:11:45  INFO        Encoded categorical: 'crop_type' \u2192 ['Cotton' 'Maize' 'Rice' 'Soybean' 'Wheat']
+10:11:45  INFO        Train size: 14,588  |  Test size: 3,647
+10:11:45  INFO      Features used: ['district', 'crop_type', 'rainfall', 'temperature', 'humidity', 'month', 'day_of_year', 'week', 'quarter', 'price_lag_1', 'price_lag_7', 'price_lag_14', 'price_roll_mean_7', 'price_roll_std_7']
+10:11:46  INFO      [\u2713] Plot saved \u2192 C:\Users\prana\OneDrive\Desktop\SUB\SEM 6\CIR\AGRI\agriadapt\outputs\price_actual_vs_predicted.png
+10:11:46  INFO      [\u2713] Feature importance plot saved \u2192 C:\Users\prana\OneDrive\Desktop\SUB\SEM 6\CIR\AGRI\agriadapt\outputs\price_feature_importance.png
+10:11:46  INFO      [\u2713] Price model saved \u2192 C:\Users\prana\OneDrive\Desktop\SUB\SEM 6\CIR\AGRI\agriadapt\backend\models\price_model.pkl
+10:11:47  INFO      Loading risk data from: C:\Users\prana\OneDrive\Desktop\SUB\SEM 6\CIR\AGRI\agriadapt\data\price_data.csv
+10:11:47  INFO      Loaded 18,250 rows from 'C:\Users\prana\OneDrive\Desktop\SUB\SEM 6\CIR\AGRI\agriadapt\data\price_data.csv'
+10:11:47  INFO      Engineering risk features ...
+10:11:47  INFO        Imputed 'rainfall': 550 \u2192 0 NaNs
+10:11:47  INFO        Imputed 'temperature': 548 \u2192 0 NaNs
+10:11:47  INFO        Imputed 'humidity': 539 \u2192 0 NaNs
+10:11:47  INFO        Drought risk distribution \u2192 positive: 1,713 (9.4%)  |  negative: 16,537
+10:11:47  INFO        Encoded categorical: 'district' \u2192 ['Aurangabad' 'Kolhapur' 'Nagpur' 'Nashik' 'Pune']
+10:11:47  INFO        Encoded categorical: 'crop_type' \u2192 ['Cotton' 'Maize' 'Rice' 'Soybean' 'Wheat']
+10:11:47  INFO        Train size: 14,154  |  Test size: 3,539
+10:11:47  INFO      Risk features used: ['district', 'crop_type', 'rainfall', 'temperature', 'humidity', 'month', 'day_of_year', 'week', 'quarter', 'rain_temp_ratio', 'heat_index', 'dry_heat']
+10:11:48  INFO      [\u2713] Confusion matrix saved \u2192 C:\Users\prana\OneDrive\Desktop\SUB\SEM 6\CIR\AGRI\agriadapt\outputs\risk_confusion_matrix.png
+10:11:48  INFO      [\u2713] ROC curve saved \u2192 C:\Users\prana\OneDrive\Desktop\SUB\SEM 6\CIR\AGRI\agriadapt\outputs\risk_roc_curve.png
+10:11:49  INFO      [\u2713] Feature importance plot saved \u2192 C:\Users\prana\OneDrive\Desktop\SUB\SEM 6\CIR\AGRI\agriadapt\outputs\risk_feature_importance.png
+10:11:49  INFO      [\u2713] Risk model saved \u2192 C:\Users\prana\OneDrive\Desktop\SUB\SEM 6\CIR\AGRI\agriadapt\backend\models\risk_model.pkl

@@ -1,0 +1,11 @@
+node_modules/
+__pycache__/
+*.pyc
+.env
+.DS_Store
+dist/
+build/
+backend/models/*.pkl
+frontend_st/outputs/*.png
+backend/models/*.png
+frontend/node_modules/
