@@ -33,9 +33,11 @@ AgriAdapt+ is a comprehensive Multilingual AI ecosystem designed to provide farm
 - [x] **Weather Sync**: Auto-fetching live weather from Open-Meteo based on the selected District (Pune, Nagpur, Nashik, etc.).
 - [x] **Geo-Mapping**: Coordinates mapping for Maharashtra districts to enable precise API calls.
 
-### 4. **Modern UI/UX**
+### 4. **Modern UI/UX & Interactive Chatbot**
 - [x] **React Dashboard**: A high-performance, glassmorphic dashboard with parameter sliders and a hybrid Chat/Advisory terminal.
-- [x] **Real-time Feedback**: UI updates automatically when district or crop parameters change.
+- [x] **Fully Localized UI**: All frontend labels, dropdowns, and buttons dynamically translate to native scripts (e.g., தமிழ், తెలుగు) via a robust UI mapping table.
+- [x] **Conversational AI**: The bot appends native-language follow-up questions to keep the farmer engaged.
+- [x] **Suggestion Chips**: Clickable quick-action chips (e.g., [Price forecast?], [Subsidies?]) generate dynamically based on conversation intent, allowing one-tap interactions.
 
 ---
 
@@ -49,15 +51,25 @@ AgriAdapt+ is a comprehensive Multilingual AI ecosystem designed to provide farm
 
 ## 🚀 Execution Instructions
 
-### 1. Backend Setup
+### 1. Requirements & Model Training
+Ensure you have Python 3.10 or 3.11 installed.
 ```bash
 cd backend
 pip install -r requirements.txt
+
+# CRITICAL: You MUST run train_models.py on your machine first
+# to generate the .pkl model files required by the API.
+python train_models.py
+```
+
+### 2. Start Backend API
+```bash
 python -m uvicorn api_layer.main:app --reload --port 8000
 ```
 *The API will be available at `http://127.0.0.1:8000`. You can view the docs at `/docs`.*
 
-### 2. Frontend Setup
+### 3. Start Frontend Dashboard
+Open a **new terminal window**:
 ```bash
 cd frontend
 npm install
