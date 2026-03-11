@@ -1,80 +1,80 @@
 # AgriAdapt+: Climate–Weather–Market Intelligent Advisory System
 
-AgriAdapt+ is a comprehensive Machine Learning ecosystem designed to generate reliable insights on crop prices and climate hazards (e.g., droughts), leveraging time-series forecasting, predictive modelling, and Generative NLP heuristics.
+AgriAdapt+ is a comprehensive Multilingual AI ecosystem designed to provide farmers with real-time crop price forecasts, drought risk assessments, and expert agricultural advisories. It aligns with the research methodology outlined in the **AgriAdapt** paper, utilizing XGBoost for market trends and Random Forest for climate risk.
 
-## 📦 Project Structure
-```text
-agriadapt/
-│
-├── backend/                  # FastAPI Application Core
-│   ├── main.py               # Routes: /predict and /ask
-│   ├── models/               # Auto-saved Joblib .pkl architectures (XGBoost & RandomForest)
-│   ├── services/
-│   │   ├── price_predictor.py    # XGBoost execution logic
-│   │   ├── risk_predictor.py     # Probability classification logic
-│   │   ├── advisory_generator.py # Heuristic rules advisory logic
-│   │   ├── llm_service.py        # Chatbot RAG heuristic pipeline for Q&A
-│   │   └── train_models.py       # Full reproducibility pipeline (Task 1 & 2 logic)
-│   ├── utils/
-│   │   └── preprocessing.py      # Powerful Pydantic schema validation wrappers
-│   └── requirements.txt
-│
-├── frontend_st/              # Streamlit Web Application  
-│   └── app.py                # Single-page dashboard + Chat UI
-│
-├── data/
-│   └── price_data.csv        # Contains chronological multi-feature weather+crop stats
-│
-└── config/                   # Configuration parameters
-```
+---
+
+## 🛠️ Tech Stack & Data Sources
+
+| Component | Technology | Source / API |
+| :--- | :--- | :--- |
+| **Backend** | FastAPI (Python 3.11+) | RESTful API Layer |
+| **Frontend** | React + Vite | Tailwind-inspired Glassmorphism UI |
+| **Weather** | **Open-Meteo API** | Real-time Rainfall, Temp, Humidity |
+| **ML Models** | XGBoost & Random Forest | Trained on historical Maharashtra data |
+| **NLP/Translation** | Deep-Translator & LangDetect | Multilingual Support (6 languages) |
+| **Database** | CSV + Joblib Serialized Models | Local persistence for speed |
+
+---
+
+## ✅ Progress & Features Implemented
+
+### 1. **Core Machine Learning Layer**
+- [x] **XGBoost Price Predictor**: Time-series forecasting for Wheat, Rice, Cotton, Soybean, and Maize.
+- [x] **Random Forest Risk Classifier**: Drought probability detection based on meteorological thresholds.
+- [x] **Price Logic Fix**: Integrated crop-specific seed prices to ensure realistic market baselines (e.g., Cotton ~₹6200, Wheat ~₹2100).
+
+### 2. **Multilingual NLP Engine**
+- [x] **Real-time Translation**: Integrated `deep-translator` to support English, Hindi, Telugu, Tamil, Kannada, and Malayalam.
+- [x] **Intent Classification**: Detects if a user is asking about Price, Risk, Policy, or Knowledge.
+- [x] **Localized Advisories**: Automated generation of native-script advice (e.g., Telugu/Hindi) based on ML outputs.
+
+### 3. **Live Data Integration**
+- [x] **Weather Sync**: Auto-fetching live weather from Open-Meteo based on the selected District (Pune, Nagpur, Nashik, etc.).
+- [x] **Geo-Mapping**: Coordinates mapping for Maharashtra districts to enable precise API calls.
+
+### 4. **Modern UI/UX**
+- [x] **React Dashboard**: A high-performance, glassmorphic dashboard with parameter sliders and a hybrid Chat/Advisory terminal.
+- [x] **Real-time Feedback**: UI updates automatically when district or crop parameters change.
+
+---
+
+## ⏳ Pending / Future Roadmap
+- [ ] **Advanced RAG**: Transition from mock Knowledge Base to a vector database (ChromaDB/FAISS) for deeper policy retrieval.
+- [ ] **Data Visualization**: Implement D3.js or Chart.js in `Graphs.jsx` for historical price trend visualization.
+- [ ] **Mobile App**: Porting the React frontend to a Capacitor/React Native shell for mobile deployment (as per paper goals).
+- [ ] **Cloud Deployment**: Finalizing Docker configurations for Render (Backend) and Vercel (Frontend).
+
+---
 
 ## 🚀 Execution Instructions
 
-### 1. Training The Models
-If you want to re-train the Models from scratch utilizing your `price_data.csv` dataset, maintaining chronological Time-Series constraints alongside R&D graphs:
-```bash
-cd backend
-python ml_layer/train_research.py
-```
-*Outputs `price_model.pkl` and `risk_model.pkl` alongside diagnostic visual evaluation graphs inside `backend/models/`.*
-
-### 2. Launch The Backend API
-We utilize FastAPI linked with `uvicorn` due to its blinding inference speed and validation handling.
+### 1. Backend Setup
 ```bash
 cd backend
 pip install -r requirements.txt
-python api_layer/main.py
+python -m uvicorn api_layer.main:app --reload --port 8000
 ```
-*(Alternative: `uvicorn api_layer.main:app --reload`)*
+*The API will be available at `http://127.0.0.1:8000`. You can view the docs at `/docs`.*
 
-### 3. Launch The Frontend Dashboard
-Following modern Python full-stack requests, the dashboard is operated in Streamlit.
+### 2. Frontend Setup
+```bash
+cd frontend
+npm install
+npm run dev -- --port 5173
+```
+*Access the dashboard at `http://localhost:5173`.*
+
+### 3. Streamlit (Alternative UI)
 ```bash
 cd frontend_st
-pip install streamlit
+pip install -r requirements.txt
 streamlit run app.py
 ```
-*Access your browser via `http://localhost:8501` to use the Dashboard.*
 
 ---
 
-## ☁️ Deployment Instructions
-
-### Deploying the Backend on Render
-1. Create a `Render Web Service`.
-2. Link your GitHub Repository.
-3. **Build Command:** `pip install -r backend/requirements.txt`
-4. **Start Command:** `uvicorn backend.main:app --host 0.0.0.0 --port $PORT`
-
-### Deploying the Frontend on Streamlit Cloud
-1. Create a `Streamlit Community Cloud` account.
-2. Link your GitHub Repository.
-3. Define the Main file path as: `frontend_st/app.py`.
-4. Ensure `streamlit` and `requests` are listed in your active constraints file or the `requirements.txt` uploaded.
-
----
-## 🧬 Methodology Used
-
-- **Price Forecasting**: Evaluates `XGBRegressor` against Baseline Linear Regressions enforcing localized cross-sectional lag features, scoring on RMSE and MAPE. Interpolation mappings enforce strictly zero geographical data leakage.
-- **Risk Evaluation**: Classifies drought thresholds using highly unbalanced-weighted `RandomForestClassifier`.
-- **RAG NLP Inference**: Integrates a functional `query->intent` detector and `knowledge base` injector, satisfying JSON LLM heuristic generation standards.
+## 🧬 Methodology (Per Paper)
+- **Price Forecasting**: Evaluates `XGBRegressor` using multi-lag features (1, 7, 14 days) and rolling means.
+- **Risk Evaluation**: Classifies drought thresholds (Rainfall < 0.5mm & Temp > 20°C) using `RandomForestClassifier` with balanced class weights.
+- **Multilingual Pipeline**: Detect -> Translate -> Intent -> ML Inference -> Back-Translate -> Farmer Delivery.
