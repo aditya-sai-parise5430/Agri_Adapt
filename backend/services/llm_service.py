@@ -2,17 +2,13 @@ import os
 import json
 import logging
 
-try:
-    from langchain.llms import HuggingFaceHub
-    from langchain.prompts import PromptTemplate
-except ImportError:
-    pass
+# B7: Removed broken langchain.llms import — langchain is not used in this service
+# In full production, you would load local or cloud LLM here:
+# from langchain_community.llms import HuggingFaceHub
 
 class LLMAdvisoryService:
     def __init__(self):
         # Initializing generic LLM heuristic handler
-        # In complete production with api keys, you would load local or cloud models here:
-        # e.g., self.llm = HuggingFaceHub(repo_id="mistralai/Mistral-7B-v0.1")
         self.knowledge_base = {
             "drought": "For sudden drought spikes, consider planting drought-resistant crops (e.g., Sorghum/Maize) and utilize deep drip irrigation methods to conserve surface evaporation.",
             "flood": "In extreme rainfall conditions, manage field drainage and avoid planting root crops that are highly susceptible to prolonged submerged rot.",
@@ -45,11 +41,10 @@ class LLMAdvisoryService:
         intent = self.determine_intent(query)
         
         # Build strict parameters from context
-        # Safely enforce base conditions so models don't crash
         ML_payload = {
             "rainfall": context.get("rainfall", 2.0),
             "temperature": context.get("temperature", 25.0),
-            "humidity": context.get("humidity", 60),
+            "humidity": float(context.get("humidity", 60)),
             "district": context.get("district", "Pune"),
             "crop_type": context.get("crop_type", "Wheat")
         }

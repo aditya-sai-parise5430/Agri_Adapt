@@ -1,4 +1,8 @@
 import os
+import sys
+# Fix Windows console encoding for Unicode characters (e.g., ₹ rupee symbol)
+if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8')
 import pandas as pd
 import numpy as np
 import joblib
@@ -19,9 +23,12 @@ warnings.filterwarnings('ignore')
 # -------------------------------------------------------------
 # CONSTANTS & CONFIGURATION
 # -------------------------------------------------------------
+# B8/B16 fix: __file__ is backend/train_models.py
+# BASE_DIR = parent of backend/ = project root
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_PATH = os.path.join(BASE_DIR, 'data', 'price_data.csv')
-MODEL_DIR = os.path.join(BASE_DIR, 'backend', 'models')
+# MODEL_DIR stays inside backend/models/ (correct)
+MODEL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models')
 
 # Create model directory if it doesn't exist
 os.makedirs(MODEL_DIR, exist_ok=True)

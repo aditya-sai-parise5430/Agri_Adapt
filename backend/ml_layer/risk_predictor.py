@@ -13,17 +13,31 @@ class RiskPredictor:
         try:
             return joblib.load(RISK_MODEL_PATH)
         except Exception as e:
-            print(f"Error loading risk model: {e}")
+            print(f"[RiskPredictor] Model not found, using fallback: {e}")
             return None
 
     def predict(self, input_data: dict) -> tuple:
-        if not self.model: return 0, 0.05
-            
+        # B4: Graceful fallback when model is unavailable
+        if self.model is None:
+            return 0, 0.05
+
         feature_order = ['rainfall', 'temperature', 'humidity', 'district', 'crop_type']
-        df = pd.DataFrame([input_data])
-        df_selected = df[feature_order]
         
-        pred = self.model.predict(df_selected)[0]
-        prob = self.model.predict_proba(df_selected)[0, 1] if hasattr(self.model, 'predict_proba') else float(pred)
+        # Build row with safe defaults for missing fields
+        row = {
+            'rainfall':    input_data.get('rainfall', 2.0),
+            'temperature': input_data.get('temperature', 25.0),
+            'humidity':    float(input_data.get('humidity', 60.0)),
+            'district':    input_data.get('district', 'Pune'),
+            'crop_type':   input_data.get('crop_type', 'Wheat'),
+        }
         
-        return int(pred), float(prob)
+        df = pd.DataFrame([row])[feature_order]
+        
+        try:
+            pred = self.model.predict(df)[0]
+            prob = self.model.predict_proba(df)[0, 1] if hasattr(self.model, 'predict_proba') else float(pred)
+            return int(pred), float(prob)
+        except Exception as e:
+            print(f"[RiskPredictor] Prediction error, using fallback: {e}")
+            return 0, 0.05

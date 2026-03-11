@@ -7,6 +7,7 @@ class PredictionRequest(BaseModel):
     humidity: float = Field(..., description="Humidity percentage")
     district: str = Field(..., description="Geographical district")
     crop_type: str = Field(..., description="Name of the crop")
+    language: Optional[str] = "English"
     
     # Lag features
     price_lag_1: Optional[float] = None
@@ -18,6 +19,7 @@ class PredictionRequest(BaseModel):
 
 class AskRequest(BaseModel):
     query: str
+    language: Optional[str] = "English"
     context: Optional[Dict] = None
 
 class IntelligentResponse(BaseModel):
@@ -27,3 +29,10 @@ class IntelligentResponse(BaseModel):
     risk_score: Optional[float] = None
     advisory: str
     confidence: float
+    suggested_followups: list[str] = []
+
+class PredictResponse(BaseModel):
+    predicted_price: float
+    risk_classification: int
+    risk_probability: float
+    advisory: str

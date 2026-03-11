@@ -1,6 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from api_layer.schemas import PredictionRequest, AskRequest, IntelligentResponse
 
 import sys
 import os
@@ -9,6 +8,10 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from ml_layer.price_predictor import PricePredictor
 from ml_layer.risk_predictor import RiskPredictor
 from nlp_layer.llm_engine import MultilingualIntelligenceCopilot
+# B5 fix: single consolidated import (removed duplicate on former line 3)
+from api_layer.schemas import PredictionRequest, AskRequest, IntelligentResponse, PredictResponse
+from services.advisory_generator import generate_advisory
+from utils.weather_service import get_live_weather
 
 # Core Architecture: API LAYER
 app = FastAPI(
@@ -37,7 +40,11 @@ def get_nlp_copilot(): return _nlp_copilot
 def health_status():
     return {"module": "API_LAYER", "status": "active"}
 
-@app.post("/predict")
+@app.get("/weather/{district}")
+def fetch_weather(district: str):
+    return get_live_weather(district)
+
+@app.post("/predict", response_model=PredictResponse)
 def run_raw_predictions(
     req: PredictionRequest,
     price_model: PricePredictor = Depends(get_price_model),
@@ -48,9 +55,24 @@ def run_raw_predictions(
         data = req.dict()
         pred_price = price_model.predict(data)
         risk_class, risk_prob = risk_model.predict(data)
-        return {"price": pred_price, "risk": risk_prob}
+
+        # Generate advisory
+        advisory = generate_advisory(
+            predicted_price=pred_price,
+            risk_probability=risk_prob,
+            crop_type=req.crop_type,
+            language=req.language or "English"
+        )
+
+        return {
+            "predicted_price": pred_price,
+            "risk_classification": int(risk_class),
+            "risk_probability": float(risk_prob),
+            "advisory": advisory
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.post("/ask", response_model=IntelligentResponse)
 def ask_universal_question(
@@ -66,6 +88,7 @@ def ask_universal_question(
     try:
         response_data = copilot.process_query(
             query=req.query,
+            language=req.language,
             context=req.context or {},
             price_engine=price_model,
             risk_engine=risk_model

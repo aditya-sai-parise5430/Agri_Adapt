@@ -1,4 +1,5 @@
 import os
+import sys
 import pandas as pd
 import numpy as np
 import joblib
@@ -16,8 +17,14 @@ import warnings
 
 warnings.filterwarnings('ignore')
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-MODEL_DIR = os.path.join(BASE_DIR, 'backend', 'models')
+# B9 fix: ensure backend/ is on sys.path so nlp_layer imports resolve correctly
+_BACKEND_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _BACKEND_DIR not in sys.path:
+    sys.path.insert(0, _BACKEND_DIR)
+
+# Project root is one level above backend/
+BASE_DIR = os.path.dirname(_BACKEND_DIR)
+MODEL_DIR = os.path.join(_BACKEND_DIR, 'models')
 os.makedirs(MODEL_DIR, exist_ok=True)
 
 class ResearchPipeline:
@@ -154,7 +161,8 @@ class ResearchPipeline:
             ("పత్తి ధర భవిష్యత్తు రేటు ఎంత", "Telugu - Evaluated as Expected Query Detection")
         ]
         
-        from backend.nlp_layer.llm_engine import MultilingualIntelligenceCopilot
+        # B9 fix: use direct import (sys.path already patched at module top)
+        from nlp_layer.llm_engine import MultilingualIntelligenceCopilot
         copilot = MultilingualIntelligenceCopilot()
         
         correct = 0
